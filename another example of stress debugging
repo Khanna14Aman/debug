@@ -1,0 +1,65 @@
+ #include<bits/stdc++.h>
+ #include<iostream>
+ #include <sstream>  
+ #include <string>
+ #define int long long 
+ using namespace std;
+ int mod = 1e9+7;
+ int solve(int ind,bool flag,string k,int d,int sum,vector<vector<vector<int>>>&dp,int n){
+     if(ind==n){
+         return sum==0;
+     }
+     if(dp[ind][flag][sum]!=-1)return dp[ind][flag][sum];
+     int ways = 0;
+     int limit = flag==true?k[ind]-'0':9;
+         
+     for(int digit = 0;digit<=limit;digit++){
+         bool islimit=digit<k[ind]-'0'?false:flag;
+         ways += solve(ind+1,islimit,k,d,(sum+digit)%d,dp,n);
+     }
+     return dp[ind][flag][sum]=ways%mod;
+ }
+ int mysol(int ind,bool flag,string k,int d,int sum,vector<vector<vector<int>>>&sp,int n){
+     if(ind==n){
+         return sum==0;
+     }
+     if(sp[ind][flag][sum]!=-1)return sp[ind][flag][sum];
+     int ways = 0;
+     int limit = flag==true?k[ind]-'0':9;
+         
+     for(int digit = 0;digit<=limit;digit++){
+         bool islimit=digit<k[ind]-'0'?false:flag;
+         ways += solve(ind+1,islimit,k,d,(sum+digit)%d,sp,n);
+     }
+     return sp[ind][flag][sum]=ways%mod;
+ }
+ signed main(){
+     srand(time(NULL));
+     int cnt=0;
+     int k1=0,d1=0;
+     while(cnt<100000){
+        cnt++;
+        int k=rand() % 50 + 1;
+        int d=rand() % 5 + 1;
+        ostringstream str1;
+        str1 << k;
+        string geek = str1.str();
+        int n = geek.length();
+        vector<vector<vector<int>>>dp(n,vector<vector<int>>(2,vector<int>(d,-1)));
+        vector<vector<vector<int>>>sp(n,vector<vector<int>>(2,vector<int>(d,-1)));
+        if(((solve(0,true,geek,d,0,dp,n)-1+mod)%mod)!=((mysol(0,true,geek,d,0,sp,n)-1+mod)%mod)){
+         k1=k;
+         d1=d;
+         cout<<((solve(0,true,geek,d,0,dp,n)-1+mod)%mod)<<" "<<((mysol(0,true,geek,d,0,sp,n)-1+mod)%mod)<<endl;
+         break;
+        }
+     }
+     cout<<k1<<" "<<d1<<endl;
+     return 0;
+ }
+
+
+
+
+
+
