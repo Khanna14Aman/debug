@@ -1,0 +1,109 @@
+#include<bits/stdc++.h>
+#define int long long 
+using namespace std;
+int dp[19][2][19];
+int sp[19][2][19];
+int fun(int ind,int flag,int cnt,int d,vector<int>num,int k){
+    if(ind==num.size()){
+        return cnt==k;
+    }
+    if(dp[ind][flag][cnt]!=-1)return dp[ind][flag][cnt];
+    
+    int limit = num[ind];
+    if(flag==1)limit=9;
+    int ways=0;
+    for(int digit=0;digit<=limit;digit++){
+        if(digit==d){
+            if(digit<num[ind]){
+                ways += fun(ind+1,1,cnt+1,d,num,k);
+            }
+            else{
+                ways += fun(ind+1,flag,cnt+1,d,num,k);
+            }
+        }
+        else{
+            if(digit<num[ind]){
+                ways += fun(ind+1,1,cnt,d,num,k);
+            }
+            else{
+                ways += fun(ind+1,flag,cnt,d,num,k);
+            }
+        }
+    }
+    return dp[ind][flag][cnt]=ways;
+    
+}
+int mysol(int ind,int flag,int cnt,int d,vector<int>num,int k){
+    if(ind==num.size()){
+        return cnt==k;
+    }
+    if(sp[ind][flag][cnt]!=-1)return sp[ind][flag][cnt];
+    
+    int limit = num[ind];
+    if(flag==1)limit=9;
+    int ways=0;
+    for(int digit=0;digit<=limit;digit++){
+        if(digit==d){
+            if(digit<num[ind]){
+                ways += fun(ind+1,1,cnt+1,d,num,k);
+            }
+            else{
+                ways += fun(ind+1,0,cnt+1,d,num,k);
+            }
+        }
+        else{
+            if(digit<num[ind]){
+                ways += fun(ind+1,1,cnt,d,num,k);
+            }
+            else{
+                ways += fun(ind+1,0,cnt,d,num,k);
+            }
+        }
+    }
+    return sp[ind][flag][cnt]=ways;
+    
+}
+vector<int> convert(int n){
+    vector<int>con;
+    while(n!=0){
+        con.emplace_back(n%10);
+        n/=10;
+    }
+    reverse(con.begin(),con.end());
+    return con;
+}
+int ans(int r,int d,int k){
+    vector<int>num;
+    num=convert(r);
+    memset(dp,-1,sizeof(dp));
+    return fun(0,0,0,d,num,k);
+    
+}
+int answer(int r,int d,int k){
+    vector<int>num;
+    num=convert(r);
+    memset(sp,-1,sizeof(sp));
+    return mysol(0,0,0,d,num,k);
+    
+}
+signed main(){
+    int cnt=0;
+    int r1=0,k1=0,d1=0;
+    srand(time(NULL));
+    while(cnt<1000000){
+    cnt++;
+    int d,k,r;
+    d= rand() % 5 + 1;
+    k = rand() % 2 + 1;
+    r = rand() % 10 + 1;
+    if(ans(r,d,k)!=answer(r,d,k)){
+        r1=r;
+        d1=d;
+        k1=k;
+        cout<<ans(r,d,k)<<" "<<answer(r,d,k)<<endl;
+        break;
+    }
+    }
+    cout<<r1<<" "<<d1<<" "<<k1<<endl;
+    return 0;
+}
